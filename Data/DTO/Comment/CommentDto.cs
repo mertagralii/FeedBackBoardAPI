@@ -8,20 +8,27 @@ public class CommentDto
 {
     [Required]
     public int Id { get; set; }
+
     [Required]
     public string Content { get; set; }
+
     [Required]
-    public DateTime DateCreated { get; set; } = DateTime.Now;
+    public DateTime DateCreated { get; set; }
+
     [Required]
-    public string UserId { get; set; }
+    public string ApplicationUserId { get; set; }
+
     [Required]
     public ApplicationUserDto ApplicationUser { get; set; }
+
     [Required]
-    public int FeedBackId { get; set; }
-    [Required]
-    public FeedbackDto FeedBack { get; set; }
-    
+    public int FeedbackId { get; set; }
+
+    // Eğer bu bir alt yorumsa, ParentComment bilgisi taşıyacağız
     public int? ParentCommentId { get; set; }
-    public CommentDto ParentComment { get; set; }
-    public ICollection<CommentDto> Replies { get; set; }
+
+    public CommentDto? ParentComment { get; set; }
+
+    // Bir yorumun birden çok cevabı (Replies) olabilir
+    public ICollection<CommentDto>? Replies { get; set; }
 }

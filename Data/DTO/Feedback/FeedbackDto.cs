@@ -10,14 +10,19 @@ public class FeedbackDto
 {
     [Required]
     public int Id { get; set; }
+
     [Required]
     public ApplicationUserDto ApplicationUser { get; set; }
+
     [Required]
     public CategoryDto Category { get; set; }
+
     [Required]
     public StatusDto Status { get; set; }
+
     [Required]
     public string Title { get; set; }
+
     [Required]
     public string Detail { get; set; }
    

@@ -1,4 +1,4 @@
-namespace FeedBackBoardAPI.Data.Entities;
+using FeedBackBoardAPI.Data.Entities;
 
 public class Feedback
 {
@@ -11,6 +11,6 @@ public class Feedback
     public Status Status { get; set; }
     public string Title { get; set; }
     public string Detail { get; set; }
-    public int? CommentId { get; set; }
-    public Comment? Comment { get; set; }
+    
+    public ICollection<Comment> Comments { get; set; }
 }

@@ -20,7 +20,11 @@ public class MappingProfile : Profile
         CreateMap<Feedback, AddFeedbackDto>().ReverseMap();
         
         //Feedback >-> DetailsFeetbackDto
-        CreateMap<Feedback, DetailsFeetbackDto>().ReverseMap();
+        CreateMap<Feedback, DetailsFeetbackDto>()
+            .ForMember(dest => dest.Comments,
+                opt => opt.MapFrom(src => src.Comments
+                    .Where(c => c.ParentCommentId == null)))
+            .ReverseMap();
         
         // Feedback <-> UpdateFeedbackDto
         CreateMap<Feedback, UpdateFeedbackDto>().ReverseMap();
