@@ -49,6 +49,9 @@ public class MappingProfile : Profile
         
         // Comment <-> CommentDto
         CreateMap<Comment, CommentDto>().ReverseMap();
+        
+        // User <-> GetUserDto
+        // CreateMap<>().ReverseMap();
 
 
 

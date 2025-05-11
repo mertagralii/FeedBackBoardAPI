@@ -1,12 +1,15 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using FeedBackBoardAPI.Data;
 using FeedBackBoardAPI.Data.Contex;
 using FeedBackBoardAPI.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace FeedBackBoardAPI;
+
 public sealed class SlugifyParameterTransformer : IOutboundParameterTransformer
 {
     public string? TransformOutbound(object? value)
@@ -18,18 +21,21 @@ public sealed class SlugifyParameterTransformer : IOutboundParameterTransformer
         return Regex.Replace(str, "([a-z])([A-Z])", "$1-$2").ToLowerInvariant();
     }
 }
+
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        
+
         builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>();
+
         builder.Services
             .AddControllers(options =>
             {
@@ -40,16 +46,37 @@ public class Program
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddAutoMapper(typeof(Program).Assembly); 
-        
 
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "FeedBack Board API",
+                Version = "v1",
+                Description = "Kullanıcıların geri bildirim gönderdiği bir blog sistemi için API.",
+                Contact = new OpenApiContact
+                {
+                    Name = "Mert Ağralı",
+                    Email = "mmertagrali@gmail.com",
+                    Url = new Uri("https://github.com/mertagralii")
+                }
+            });
+            c.EnableAnnotations();
+            
+        });
+
+        builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            await SeedRoles(services);
+        }
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -60,13 +87,27 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-        // Identity endpoint grubunu hem route hem Swagger tag için özelleştiriyoruz
+
         app.MapGroup("/user")
-            .WithTags("01-user") // Swagger'da bu tag görünür
+            .WithTags("01-user")
             .MyMapIdentityApi<ApplicationUser>();
 
         app.MapControllers();
 
         app.Run();
+    }
+
+    public static async Task SeedRoles(IServiceProvider serviceProvider)
+    {
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        if (await roleManager.RoleExistsAsync("Admin")) { return; }
+
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+        var adminUser = new ApplicationUser() { UserName = "admin", Email = "admin@gmail.com", EmailConfirmed = true };
+        await userManager.CreateAsync(adminUser, "P99yG-wSd8T$");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
     }
 }
