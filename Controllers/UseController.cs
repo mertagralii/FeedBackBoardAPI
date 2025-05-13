@@ -1,3 +1,4 @@
+using AutoMapper;
 using FeedBackBoardAPI.Data.DTO.Register;
 using FeedBackBoardAPI.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -11,16 +12,17 @@ namespace FeedBackBoardAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin" )]
     public class UseController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
-        public UseController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UseController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         // DTO Kısımları ve Map kısmı yapılacak.
 
@@ -39,12 +41,13 @@ namespace FeedBackBoardAPI.Controllers
             {
                 return NotFound("User not found");
             }
-            return Ok(userList);
+             var result =_mapper.Map<List<UserDto>>(userList);
+            return Ok(result);
         }
 
 
         #endregion
-
+        // Burası Kullanıcının Email adresine göre kullanıcı bilgisini getiriyor. 
         #region Email'e sahip Kullanıcıyı Getir
         [HttpGet("[action]")]
         [SwaggerOperation(Summary = "Email'e ait kullanıcıyı getir. ", Description = "Bu Endpointi Email'e ait kullanıcı Bilgilerini getirmeye yarar.")]
@@ -58,7 +61,8 @@ namespace FeedBackBoardAPI.Controllers
             {
                 return NotFound("User Not Found");
             }
-            return Ok(user);
+            var result =_mapper.Map<UserDto>(user);
+            return Ok(result);
         }
         #endregion
 
