@@ -22,14 +22,16 @@ namespace FeedBackBoardAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly AppDbContext _context;
+        private readonly ILogger<UseController> _logger; // Logger'i getirdik.
 
-        public UseController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IWebHostEnvironment webHostEnvironment,AppDbContext context)
+        public UseController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IWebHostEnvironment webHostEnvironment,AppDbContext context, ILogger<UseController> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _context = context;
+            _logger = logger; // Logger'i ınejction bağlantısını yaptık
         }
         // DTO Kısımları ve Map kısmı yapılacak.
 
@@ -43,6 +45,7 @@ namespace FeedBackBoardAPI.Controllers
         [SwaggerResponse(401  , "Admin Değilsiniz. Tüm Kullanıcıların verisini alamazsınız.")]
         public async Task<IActionResult> GetUsersList()
         {
+            _logger.LogInformation("Kullanıcı Get Users List Enpointine istek attı."); // Logger bilgilendirme
             var userList = await _userManager.Users.ToListAsync();
             if (userList == null)
             {
