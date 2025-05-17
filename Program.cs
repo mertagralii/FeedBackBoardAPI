@@ -70,6 +70,7 @@ public class Program
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
         var app = builder.Build();
+       
 
         using (var scope = app.Services.CreateScope())
         {
@@ -84,7 +85,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
+        // wwwroot klasöründeki statik dosyaları erişilebilir yap
+        app.UseStaticFiles();
         app.UseAuthentication();
         app.UseAuthorization();
 

@@ -21,14 +21,14 @@ namespace FeedBackBoardAPI.Controllers
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        // Admin yetkileri eklenecek (Güncelleme ve Silme İçin)
         public FeedbackController(AppDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;    
         }
-
+        // Burası Feedbacklerin getirildiği Enpoint Kısmı
         #region Tüm Feedbackleri Getir ✓
         
         [HttpGet("[action]")]
@@ -53,7 +53,7 @@ namespace FeedBackBoardAPI.Controllers
 
 
         #endregion
-        
+        // Burası Feedbackleri Kategorilere göre getirdiğimiz endpoint kısmı
         #region Sadece Seçili Kategorilerin Feedbacklerini getir ✓
 
         [HttpGet("[action]")]
@@ -78,7 +78,7 @@ namespace FeedBackBoardAPI.Controllers
 
         #endregion
        
-
+        // Burası Sadece İstenilen Endpointlerin getirildiği Kısım
         #region  İstenilen FeedBack getir ✓
 
         [HttpGet("[action]")]
@@ -104,7 +104,7 @@ namespace FeedBackBoardAPI.Controllers
 
         #endregion
         
-
+        // Burası FeedBackleri eklediğimiz Endpoint Kısmı
         #region FeedBack Ekle Kısmı ✓
 
         [Authorize]
@@ -130,7 +130,7 @@ namespace FeedBackBoardAPI.Controllers
 
         #endregion
        
-
+        //Burası FeetBackleri güncellediğimiz Endpoint Kısmı
         #region FeetBack Güncelleme ✓
 
         [Authorize]
@@ -168,7 +168,7 @@ namespace FeedBackBoardAPI.Controllers
 
         #endregion
       
-        
+        // Burası Sadece FeedBackleri Sildiğimiz Endpoint Kısmı
         # region FeedBack Silme Kısmı ✓
         [Authorize]
         [HttpDelete("[action]")]
@@ -194,7 +194,7 @@ namespace FeedBackBoardAPI.Controllers
             return Ok(resume);
         }
         #endregion
-
+        // Burası FeedBacklere Yorum attığımız Enpoint Kısmı (İlk Tepe Yorumu)
         #region  Yorum atma Kısmı ✓
 
         [Authorize]
@@ -221,7 +221,8 @@ namespace FeedBackBoardAPI.Controllers
 
 
         #endregion
-
+        
+        //Burası Tepe yorumları güncellediğimiz  Endpoint Kısmı
         #region Yorum Güncelleme Kısmı ✓
 
         [Authorize]
@@ -257,7 +258,7 @@ namespace FeedBackBoardAPI.Controllers
 
         #endregion
        
-
+        // Burası Yorumları Sildiğimiz Endpoint Kısmı
         #region Yorum Silme Kısmı ✓
 
         [Authorize]
@@ -285,7 +286,7 @@ namespace FeedBackBoardAPI.Controllers
         }
 
         #endregion
-        
+        // Burası yorumlara cevap yazdığımız kısım (Tepe yorumlara yazılan cevap niteliğinde alt yorumlar)
         #region Feedback yoruma yorum atma kısmı  ✓
         [Authorize]
         [HttpPost("[action]")]
@@ -320,7 +321,7 @@ namespace FeedBackBoardAPI.Controllers
             return Ok(result);
         }
         #endregion
-
+        // Burası alt yorumlara güncellesi için kullandığımız Endpoint Kısmı
         #region Yoruma Cevap Verme Güncelleme  ✓
 
         [Authorize]
@@ -354,7 +355,7 @@ namespace FeedBackBoardAPI.Controllers
         } 
 
         #endregion
-
+        // Burası sadece Alt Yorumlari silmek için kullandığımız Kısım
         #region Yoruma Cevap Verme Silme ✓
 
         [Authorize]
