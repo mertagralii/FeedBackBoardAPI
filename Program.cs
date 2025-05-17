@@ -35,8 +35,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         #region Serilog, ILogger'in ayarlandığı Kısım 
-
+        // Kurulan Paketler (Dosyaya yazdırmak için)
+        //dotnet add package Serilog.AspNetCore
+        // dotnet add package Serilog.Sinks.File
         // Serilog konfigürasyonu - Logları "Logs/log-.txt" dosyasına günlük olarak kaydeder
+        // Aşağıdaki kod örneği biz loglarımızın bir dosya içerisinde yazılmasını istedik.
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File( // Dosyaya yazmasını söyledik.
                 path: "Logs/log-.txt", // Yolunu söyledik. (Kendisi otomatik olarak açıyor.)
